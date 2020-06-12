@@ -1,6 +1,12 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {DummyDoctor1} from '../../assets';
+import {
+  DummyDoctor4,
+  DummyDoctor5,
+  DummyDoctor6,
+  DummyDoctor7,
+  DummyDoctor8,
+} from '../../assets';
 import {HeaderComponent, DoctorComponent} from '../../components';
 import {colors} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
@@ -21,36 +27,36 @@ const ChooseDoctorScreen: React.FC<ChooseDoctorScreenProps> = ({
       />
       <DoctorComponent
         type="next"
-        avatar={DummyDoctor1}
+        avatar={DummyDoctor4}
         name="Alexander Jannie"
+        description="Perempuan"
+        onPress={() => null}
+      />
+      <DoctorComponent
+        type="next"
+        avatar={DummyDoctor6}
+        name="John McParker Steve"
+        description="Pria"
+        onPress={() => null}
+      />
+      <DoctorComponent
+        type="next"
+        avatar={DummyDoctor7}
+        name="Nairobi Putri Hayza"
         description="Perempuan"
         onPress={() => navigation.navigate('Chatting')}
       />
       <DoctorComponent
         type="next"
-        avatar={DummyDoctor1}
-        name="Alexander Jannie"
-        description="Perempuan"
+        avatar={DummyDoctor8}
+        name="James Rivillia"
+        description="Pria"
         onPress={() => null}
       />
       <DoctorComponent
         type="next"
-        avatar={DummyDoctor1}
-        name="Alexander Jannie"
-        description="Perempuan"
-        onPress={() => null}
-      />
-      <DoctorComponent
-        type="next"
-        avatar={DummyDoctor1}
-        name="Alexander Jannie"
-        description="Perempuan"
-        onPress={() => null}
-      />
-      <DoctorComponent
-        type="next"
-        avatar={DummyDoctor1}
-        name="Alexander Jannie"
+        avatar={DummyDoctor5}
+        name="Liu Yue Tian Park"
         description="Perempuan"
         onPress={() => null}
       />

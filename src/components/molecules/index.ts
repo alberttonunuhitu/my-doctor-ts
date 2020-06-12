@@ -6,6 +6,8 @@ import DoctorRatingComponent from './DoctorRating';
 import NewsComponent from './News';
 import DoctorComponent from './Doctor';
 import HospitalComponent from './Hospital';
+import ChatComponent from './Chat';
+import InputChatComponent from './InputChat';
 
 export {
   HeaderComponent,
@@ -16,4 +18,6 @@ export {
   NewsComponent,
   DoctorComponent,
   HospitalComponent,
+  ChatComponent,
+  InputChatComponent,
 };

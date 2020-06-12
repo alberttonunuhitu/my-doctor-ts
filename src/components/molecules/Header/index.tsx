@@ -1,19 +1,35 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {ButtomComponent, SpaceComponent} from '../../atoms';
+import DarkProfileComponent from './DarkProfile';
 import {colors, fonts} from '../../../utilities';
 
 interface HeaderComponentProps {
   type?: string;
   title: string;
+  category?: string;
+  avatar?: string;
   onPress: () => void;
 }
 
 const HeaderComponent: React.FC<HeaderComponentProps> = ({
   type,
   title,
+  category,
+  avatar,
   onPress,
 }) => {
+  if (type === 'dark-profile') {
+    return (
+      <DarkProfileComponent
+        title={title}
+        category={category}
+        avatar={avatar}
+        onPress={onPress}
+      />
+    );
+  }
+
   let icon = 'back-dark';
   let containerColor = colors.white;
   let borderBottomLeftRadius = 0;
