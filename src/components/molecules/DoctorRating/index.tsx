@@ -1,17 +1,27 @@
 import React from 'react';
-import {Text, View, StyleSheet, Image} from 'react-native';
-import {DummyDoctor1, IconStar} from '../../../assets';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {IconStar} from '../../../assets';
 import {fonts, colors} from '../../../utilities';
 
-interface DoctorRatingComponentProps {}
+interface DoctorRatingComponentProps {
+  avatar: any;
+  name: string;
+  description: string;
+  onPress: () => void;
+}
 
-const DoctorRatingComponent: React.FC<DoctorRatingComponentProps> = ({}) => {
+const DoctorRatingComponent: React.FC<DoctorRatingComponentProps> = ({
+  avatar,
+  name,
+  description,
+  onPress,
+}) => {
   return (
-    <View style={styles.container}>
-      <Image source={DummyDoctor1} style={styles.avatar} />
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <Image source={avatar} style={styles.avatar} />
       <View style={styles.wrapperContent}>
-        <Text style={styles.nameText}>Alexa Rachel</Text>
-        <Text style={styles.categoryText}>Pediatrician</Text>
+        <Text style={styles.nameText}>{name}</Text>
+        <Text style={styles.categoryText}>{description}</Text>
       </View>
       <View style={styles.rating}>
         <IconStar />
@@ -20,7 +30,7 @@ const DoctorRatingComponent: React.FC<DoctorRatingComponentProps> = ({}) => {
         <IconStar />
         <IconStar />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -30,6 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 16,
   },
   avatar: {

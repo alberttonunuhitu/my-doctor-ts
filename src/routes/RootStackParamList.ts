@@ -10,6 +10,9 @@ export type RootStackParamList = {
   MainApp: undefined;
   ChooseDoctor: undefined;
   Chatting: undefined;
+  User: undefined;
+  EditProfile: undefined;
+  DoctorProfile: undefined;
 };
 
 export type RootStackNavProps<

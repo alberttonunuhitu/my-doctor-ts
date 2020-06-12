@@ -7,7 +7,7 @@ import {
   DummyDoctor7,
   DummyDoctor8,
 } from '../../assets';
-import {HeaderComponent, DoctorComponent} from '../../components';
+import {HeaderComponent, ListComponent} from '../../components';
 import {colors} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 
@@ -25,35 +25,35 @@ const ChooseDoctorScreen: React.FC<ChooseDoctorScreenProps> = ({
         type="dark"
         onPress={() => navigation.goBack()}
       />
-      <DoctorComponent
+      <ListComponent
         type="next"
         avatar={DummyDoctor4}
         name="Alexander Jannie"
         description="Perempuan"
         onPress={() => null}
       />
-      <DoctorComponent
+      <ListComponent
         type="next"
         avatar={DummyDoctor6}
         name="John McParker Steve"
         description="Pria"
         onPress={() => null}
       />
-      <DoctorComponent
+      <ListComponent
         type="next"
         avatar={DummyDoctor7}
         name="Nairobi Putri Hayza"
         description="Perempuan"
         onPress={() => navigation.navigate('Chatting')}
       />
-      <DoctorComponent
+      <ListComponent
         type="next"
         avatar={DummyDoctor8}
         name="James Rivillia"
         description="Pria"
         onPress={() => null}
       />
-      <DoctorComponent
+      <ListComponent
         type="next"
         avatar={DummyDoctor5}
         name="Liu Yue Tian Park"

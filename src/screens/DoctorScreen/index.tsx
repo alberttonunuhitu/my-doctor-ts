@@ -8,7 +8,12 @@ import {
   NewsComponent,
 } from '../../components';
 import {colors, fonts} from '../../utilities';
-import {JSONDoctorCategories} from '../../assets';
+import {
+  JSONDoctorCategories,
+  DummyDoctor1,
+  DummyDoctor2,
+  DummyDoctor3,
+} from '../../assets';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 
 interface DoctorScreenProps {
@@ -27,7 +32,7 @@ const DoctorScreen: React.FC<DoctorScreenProps> = ({navigation}) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.wrapperSection}>
             <SpaceComponent height={30} />
-            <UserHeaderComponent />
+            <UserHeaderComponent onPress={() => navigation.navigate('User')} />
             <Text style={styles.description}>
               Mau konsultasi dengan siapa hari ini?
             </Text>
@@ -47,9 +52,24 @@ const DoctorScreen: React.FC<DoctorScreenProps> = ({navigation}) => {
           </View>
           <View style={styles.wrapperSection}>
             <Text style={styles.sectionTitle}>Top Rated Doctors</Text>
-            <DoctorRatingComponent />
-            <DoctorRatingComponent />
-            <DoctorRatingComponent />
+            <DoctorRatingComponent
+              avatar={DummyDoctor1}
+              name="Alexa Rachel"
+              description="Pediatrician"
+              onPress={() => navigation.navigate('DoctorProfile')}
+            />
+            <DoctorRatingComponent
+              avatar={DummyDoctor2}
+              name="Sunny Frank"
+              description="Dentist"
+              onPress={() => navigation.navigate('DoctorProfile')}
+            />
+            <DoctorRatingComponent
+              avatar={DummyDoctor3}
+              name="Poe Minn"
+              description="Podiatrist"
+              onPress={() => navigation.navigate('DoctorProfile')}
+            />
             <Text style={styles.sectionTitle}>Good News</Text>
           </View>
           <NewsComponent />

@@ -1,26 +1,49 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {IconNext} from '../../../assets';
+import {
+  IconNext,
+  IconUser,
+  IconLanguage,
+  IconStarBlue,
+  IconFile,
+} from '../../../assets';
 import {colors, fonts} from '../../../utilities';
 
-interface DoctorComponentProps {
-  avatar: any;
+interface ListComponentProps {
+  avatar?: any | undefined;
+  icon?: string | undefined;
   name: string;
   description: string;
   type?: string;
   onPress: () => void;
 }
 
-const DoctorComponent: React.FC<DoctorComponentProps> = ({
+const ListComponent: React.FC<ListComponentProps> = ({
   avatar,
+  icon = undefined,
   name,
   description,
   type,
   onPress,
 }) => {
+  const Icon = () => {
+    switch (icon) {
+      case 'user':
+        return <IconUser />;
+      case 'language':
+        return <IconLanguage />;
+      case 'rating':
+        return <IconStarBlue />;
+      case 'help':
+        return <IconFile />;
+      default:
+        return <IconUser />;
+    }
+  };
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={avatar} style={styles.avatar} />
+      {icon ? <Icon /> : <Image source={avatar} style={styles.avatar} />}
       <View style={styles.content}>
         <Text style={styles.nameText}>{name}</Text>
         <Text style={styles.descriptionText}>{description}</Text>
@@ -30,7 +53,7 @@ const DoctorComponent: React.FC<DoctorComponentProps> = ({
   );
 };
 
-export default DoctorComponent;
+export default ListComponent;
 
 const styles = StyleSheet.create({
   container: {
@@ -43,12 +66,13 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    marginLeft: 16,
   },
+  icon: {},
   avatar: {
     width: 46,
     height: 46,
     borderRadius: 46 / 2,
-    marginRight: 12,
   },
   nameText: {
     fontFamily: fonts.primary.normal,

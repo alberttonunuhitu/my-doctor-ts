@@ -1,19 +1,21 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {DummyUser} from '../../../assets';
 import {colors, fonts} from '../../../utilities';
 
-interface UserHeaderComponentProps {}
+interface UserHeaderComponentProps {
+  onPress: () => void;
+}
 
-const UserHeaderComponent: React.FC<UserHeaderComponentProps> = ({}) => {
+const UserHeaderComponent: React.FC<UserHeaderComponentProps> = ({onPress}) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={DummyUser} style={styles.avatar} />
       <View>
         <Text style={styles.nameText}>Shayna Melinda</Text>
         <Text style={styles.professionText}>Product Designer</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

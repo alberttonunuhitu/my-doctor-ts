@@ -13,8 +13,8 @@ Project ini mengikuti dari course BWA React Native.
 - - [x] Hospital Screen
 - - [x] Choose Doctor Screen
 - - [x] Chatting Screen
-- - [ ] User Profile Screen
-- - [ ] Edit Profile Screen
-- - [ ] Doctor Profile Screen
+- - [x] User Profile Screen
+- - [x] Edit Profile Screen
+- - [x] Doctor Profile Screen
 
 - Integration

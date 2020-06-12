@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {DummyDoctor4, DummyDoctor5, DummyDoctor6} from '../../assets';
-import {DoctorComponent} from '../../components';
+import {ListComponent} from '../../components';
 import {colors, fonts} from '../../utilities';
 
 interface MessageScreenProps {}
@@ -33,7 +33,7 @@ const MessageScreen: React.FC<MessageScreenProps> = ({}) => {
       <View style={styles.content}>
         <Text style={styles.titleText}>Messages</Text>
         {doctors.map((doctor) => (
-          <DoctorComponent
+          <ListComponent
             key={doctor.id}
             avatar={doctor.avatar}
             name={doctor.name}

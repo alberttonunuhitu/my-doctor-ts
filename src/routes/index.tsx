@@ -14,6 +14,9 @@ import {
   HospitalsScreen,
   ChooseDoctorScreen,
   ChattingScreen,
+  UserScreen,
+  EditProfileScreen,
+  DoctorProfileScreen,
 } from '../screens';
 import {RootStackParamList} from './RootStackParamList';
 import {RootBottomTabParamList} from './RootBottomTabParamList';
@@ -38,7 +41,7 @@ const Routes: React.FC<RoutesProps> = ({}) => {
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        initialRouteName="MainApp"
+        initialRouteName="Splash"
         screenOptions={{headerShown: false}}>
         <RootStack.Screen name="Splash" component={SplashScreen} />
         <RootStack.Screen
@@ -51,6 +54,12 @@ const Routes: React.FC<RoutesProps> = ({}) => {
         <RootStack.Screen name="MainApp" component={MainApp} />
         <RootStack.Screen name="ChooseDoctor" component={ChooseDoctorScreen} />
         <RootStack.Screen name="Chatting" component={ChattingScreen} />
+        <RootStack.Screen name="User" component={UserScreen} />
+        <RootStack.Screen name="EditProfile" component={EditProfileScreen} />
+        <RootStack.Screen
+          name="DoctorProfile"
+          component={DoctorProfileScreen}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );

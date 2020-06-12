@@ -4,10 +4,11 @@ import UserHeaderComponent from './UserHeader';
 import DoctorCategoryComponent from './DoctorCategory';
 import DoctorRatingComponent from './DoctorRating';
 import NewsComponent from './News';
-import DoctorComponent from './Doctor';
+import ListComponent from './List';
 import HospitalComponent from './Hospital';
 import ChatComponent from './Chat';
 import InputChatComponent from './InputChat';
+import ProfileComponent from './Profile';
 
 export {
   HeaderComponent,
@@ -16,8 +17,9 @@ export {
   DoctorCategoryComponent,
   DoctorRatingComponent,
   NewsComponent,
-  DoctorComponent,
+  ListComponent,
   HospitalComponent,
   ChatComponent,
   InputChatComponent,
+  ProfileComponent,
 };
