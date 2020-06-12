@@ -22,14 +22,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
       <InputComponent label="Email Address" />
       <SpaceComponent height={24} />
       <InputComponent label="Password" />
-      <LinkComponent label="Forgot My Password" />
+      <LinkComponent label="Forgot My Password" onPress={() => null} />
       <SpaceComponent height={30} />
       <ButtomComponent
         label="Login"
         onPress={() => navigation.replace('MainApp')}
       />
       <SpaceComponent height={40} />
-      <LinkComponent size={16} label="Create New Account" align="center" />
+      <LinkComponent
+        size={16}
+        label="Create New Account"
+        align="center"
+        onPress={() => navigation.navigate('Register')}
+      />
     </View>
   );
 };

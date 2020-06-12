@@ -30,14 +30,14 @@ const ChooseDoctorScreen: React.FC<ChooseDoctorScreenProps> = ({
         avatar={DummyDoctor4}
         name="Alexander Jannie"
         description="Perempuan"
-        onPress={() => null}
+        onPress={() => navigation.navigate('Chatting')}
       />
       <ListComponent
         type="next"
         avatar={DummyDoctor6}
         name="John McParker Steve"
         description="Pria"
-        onPress={() => null}
+        onPress={() => navigation.navigate('Chatting')}
       />
       <ListComponent
         type="next"
@@ -51,14 +51,14 @@ const ChooseDoctorScreen: React.FC<ChooseDoctorScreenProps> = ({
         avatar={DummyDoctor8}
         name="James Rivillia"
         description="Pria"
-        onPress={() => null}
+        onPress={() => navigation.navigate('Chatting')}
       />
       <ListComponent
         type="next"
         avatar={DummyDoctor5}
         name="Liu Yue Tian Park"
         description="Perempuan"
-        onPress={() => null}
+        onPress={() => navigation.navigate('Chatting')}
       />
     </View>
   );

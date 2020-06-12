@@ -29,7 +29,7 @@ const ChattingScreen: React.FC<ChattingScreenProps> = ({navigation}) => {
         <ChatComponent isMe={false} />
         <ChatComponent isMe={true} />
       </View>
-      <InputChatComponent />
+      <InputChatComponent isDisable={false} onPress={() => null} />
     </View>
   );
 };

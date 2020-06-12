@@ -3,10 +3,13 @@ import {StyleSheet, Text, View} from 'react-native';
 import {DummyDoctor4, DummyDoctor5, DummyDoctor6} from '../../assets';
 import {ListComponent} from '../../components';
 import {colors, fonts} from '../../utilities';
+import {RootStackNavProps} from '../../routes/RootStackParamList';
 
-interface MessageScreenProps {}
+interface MessageScreenProps {
+  navigation: RootStackNavProps<'MainApp'>;
+}
 
-const MessageScreen: React.FC<MessageScreenProps> = ({}) => {
+const MessageScreen: React.FC<MessageScreenProps> = ({navigation}) => {
   const [doctors] = useState([
     {
       id: 1,
@@ -38,7 +41,7 @@ const MessageScreen: React.FC<MessageScreenProps> = ({}) => {
             avatar={doctor.avatar}
             name={doctor.name}
             description={doctor.description}
-            onPress={() => null}
+            onPress={() => navigation.navigate('Chatting')}
           />
         ))}
       </View>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {DummyDoctor7} from '../../assets';
 import {
   HeaderComponent,
   ProfileComponent,
@@ -23,7 +24,12 @@ const DoctorProfileScreen: React.FC<DoctorProfileScreenProps> = ({
         title="Doctor Profile"
         onPress={() => navigation.goBack()}
       />
-      <ProfileComponent name="Nairobi Putri Hayza" description="Dokter Anak" />
+      <ProfileComponent
+        avatar={DummyDoctor7}
+        name="Nairobi Putri Hayza"
+        description="Dokter Anak"
+        icon="female"
+      />
       <SpaceComponent height={10} />
       <InputReadOnlyComponent
         label="Alumnus"

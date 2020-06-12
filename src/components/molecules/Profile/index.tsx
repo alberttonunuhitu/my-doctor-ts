@@ -1,24 +1,48 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import {DummyUser, IconRemovePhoto} from '../../../assets';
+import {IconRemovePhoto, IconFemale, IconMale} from '../../../assets';
 import {colors, fonts} from '../../../utilities';
 
 interface ProfileComponentProps {
+  avatar: any;
   name?: string | undefined;
   description?: string | undefined;
+  isRemove?: boolean;
+  icon?: string | undefined;
 }
 
 const ProfileComponent: React.FC<ProfileComponentProps> = ({
+  avatar,
   name,
   description,
+  isRemove = false,
+  icon,
 }) => {
+  const Icon = () => {
+    switch (icon) {
+      case 'female':
+        return <IconFemale />;
+      case 'male':
+        return <IconMale />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.wrapperAvatar}>
-        <Image source={DummyUser} style={styles.avatar} />
-        <View style={styles.wrapperIcon}>
-          <IconRemovePhoto />
-        </View>
+        <Image source={avatar} style={styles.avatar} />
+        {isRemove && (
+          <View style={styles.wrapperIcon}>
+            <IconRemovePhoto />
+          </View>
+        )}
+        {icon && (
+          <View style={styles.wrapperIcon}>
+            <Icon />
+          </View>
+        )}
       </View>
       {name && (
         <View>

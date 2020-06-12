@@ -25,15 +25,25 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
         <View style={styles.sectionUploadPhoto}>
           <View style={styles.wrapperAvatar}>
             <Image source={ILNullPhoto} style={styles.avatar} />
-            <IconAddPhoto style={styles.buttonAddPhoto} />
+            <View style={styles.wrapperIcon}>
+              <IconAddPhoto />
+            </View>
           </View>
           <Text style={styles.textName}>Shayna Melinda</Text>
           <Text style={styles.textProfession}>Product Designer</Text>
         </View>
         <View>
-          <ButtomComponent label="Upload and Continue" onPress={() => null} />
+          <ButtomComponent
+            label="Upload and Continue"
+            onPress={() => navigation.replace('MainApp')}
+          />
           <SpaceComponent height={30} />
-          <LinkComponent label="Skip for this" size={16} align="center" />
+          <LinkComponent
+            label="Skip for this"
+            size={16}
+            align="center"
+            onPress={() => navigation.replace('MainApp')}
+          />
         </View>
       </View>
     </View>
@@ -71,8 +81,10 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
   },
-  buttonAddPhoto: {
+  wrapperIcon: {
     position: 'absolute',
+    width: 30,
+    height: 30,
     bottom: 8,
     right: 6,
   },

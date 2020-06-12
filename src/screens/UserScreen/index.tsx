@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {DummyUser} from '../../assets';
 import {
   HeaderComponent,
   ProfileComponent,
@@ -18,7 +19,11 @@ const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
     <View style={styles.screen}>
       <HeaderComponent title="Profile" onPress={() => navigation.goBack()} />
       <SpaceComponent height={10} />
-      <ProfileComponent />
+      <ProfileComponent
+        avatar={DummyUser}
+        name="Shayna Melinda"
+        description="Product Designer"
+      />
       <SpaceComponent height={14} />
       <ListComponent
         type="next"

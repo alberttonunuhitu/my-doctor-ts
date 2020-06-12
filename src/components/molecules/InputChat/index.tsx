@@ -3,17 +3,23 @@ import {StyleSheet, TextInput, View} from 'react-native';
 import {ButtomComponent} from '../../../components';
 import {colors, fonts} from '../../../utilities';
 
-interface InputChatComponentProps {}
+interface InputChatComponentProps {
+  isDisable: boolean;
+  onPress: () => void;
+}
 
-const InputChatComponent: React.FC<InputChatComponentProps> = ({}) => {
+const InputChatComponent: React.FC<InputChatComponentProps> = ({
+  isDisable,
+  onPress,
+}) => {
   return (
     <View style={styles.container}>
       <TextInput style={styles.input} placeholder="Tulis pesan untuk Nairobi" />
       <ButtomComponent
         type="send-chat"
         label="Send"
-        isDisabled={true}
-        onPress={() => null}
+        isDisabled={isDisable}
+        onPress={onPress}
       />
     </View>
   );

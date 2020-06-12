@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
+import {DummyUser} from '../../assets';
 import {
   HeaderComponent,
   ProfileComponent,
@@ -23,7 +24,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({navigation}) => {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <ProfileComponent />
+          <ProfileComponent avatar={DummyUser} isRemove={true} />
           <SpaceComponent height={26} />
           <InputComponent label="Full Name" />
           <SpaceComponent height={24} />
