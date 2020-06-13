@@ -43,7 +43,6 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-google-services.json
 !debug.keystore
 
 # fastlane
@@ -62,3 +61,6 @@ google-services.json
 
 # CocoaPods
 /ios/Pods/
+
+#Google Service
+android/app/google-services.json
