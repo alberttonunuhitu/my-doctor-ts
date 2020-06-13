@@ -3,7 +3,7 @@ Project ini mengikuti dari course BWA React Native.
 
 # TODO
 
-- Slicing:
+- [x] Slicing:
 - - [x] Splash Screen
 - - [x] Getting Started Screen
 - - [x] Register Screen
@@ -17,4 +17,8 @@ Project ini mengikuti dari course BWA React Native.
 - - [x] Edit Profile Screen
 - - [x] Doctor Profile Screen
 
-- Integration
+- [ ] Integration
+- - [x] Firebase
+- - [x] Firebase/Auth
+- - [ ] Firebase/Firestore
+- - [ ] Firebase/Storage

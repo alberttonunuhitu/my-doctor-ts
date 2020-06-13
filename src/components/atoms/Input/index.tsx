@@ -1,16 +1,38 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, View, TextInput, StyleSheet} from 'react-native';
 import {colors, fonts} from '../../../utilities';
 
 interface InputComponentProps {
+  type?: string;
   label: string;
+  value?: any | undefined;
+  onChangeText?: (text: string) => void;
 }
 
-const InputComponent: React.FC<InputComponentProps> = ({label}) => {
+const InputComponent: React.FC<InputComponentProps> = ({
+  type = 'text',
+  label,
+  value,
+  onChangeText,
+}) => {
+  const [borderColor, setBorderColor] = useState(colors.border);
+
+  const onFocusForm = () => setBorderColor(colors.tertiary);
+  const onBlurForm = () => setBorderColor(colors.border);
+
+  const secureTextEntry = type === 'password' ? true : false;
+
   return (
     <View>
       <Text style={styles.text}>{label}</Text>
-      <TextInput style={styles.input} />
+      <TextInput
+        onFocus={onFocusForm}
+        onBlur={onBlurForm}
+        value={value}
+        onChangeText={onChangeText}
+        style={[styles.input, {borderColor: borderColor}]}
+        secureTextEntry={secureTextEntry}
+      />
     </View>
   );
 };
@@ -26,7 +48,6 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.border,
     borderRadius: 10,
     padding: 12,
   },

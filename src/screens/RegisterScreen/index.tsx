@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {
   ButtomComponent,
   HeaderComponent,
@@ -8,12 +8,46 @@ import {
 } from '../../components';
 import {colors} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
+import auth from '@react-native-firebase/auth';
 
 interface RegisterScreenProps {
   navigation: RootStackNavProps<'Register'>;
 }
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
+  interface UserInterface {
+    fullName: string;
+    profession: string;
+    email: string;
+    password: string;
+  }
+
+  const [user, setUser] = useState<UserInterface>({
+    fullName: '',
+    profession: '',
+    email: '',
+    password: '',
+  });
+
+  const onCountinue = () => {
+    auth()
+      .createUserWithEmailAndPassword(user.email, user.password)
+      .then(() => {
+        // return navigation.navigate('UploadPhoto');
+      })
+      .catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+        }
+
+        console.error(error);
+      });
+  };
+
   return (
     <View style={styles.screen}>
       <HeaderComponent
@@ -21,18 +55,34 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
         onPress={() => navigation.goBack()}
       />
       <View style={styles.content}>
-        <InputComponent label="Full Name" />
-        <SpaceComponent height={24} />
-        <InputComponent label="Pekerjaan" />
-        <SpaceComponent height={24} />
-        <InputComponent label="Email Password" />
-        <SpaceComponent height={24} />
-        <InputComponent label="Password" />
-        <SpaceComponent height={40} />
-        <ButtomComponent
-          label="Continue"
-          onPress={() => navigation.navigate('UploadPhoto')}
-        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <InputComponent
+            label="Full Name"
+            value={user.fullName}
+            onChangeText={(value) => setUser({...user, fullName: value})}
+          />
+          <SpaceComponent height={24} />
+          <InputComponent
+            label="Pekerjaan"
+            value={user.profession}
+            onChangeText={(value) => setUser({...user, profession: value})}
+          />
+          <SpaceComponent height={24} />
+          <InputComponent
+            label="Email"
+            value={user.email}
+            onChangeText={(value) => setUser({...user, email: value})}
+          />
+          <SpaceComponent height={24} />
+          <InputComponent
+            type="password"
+            label="Password"
+            value={user.password}
+            onChangeText={(value) => setUser({...user, password: value})}
+          />
+          <SpaceComponent height={40} />
+          <ButtomComponent label="Continue" onPress={onCountinue} />
+        </ScrollView>
       </View>
     </View>
   );
