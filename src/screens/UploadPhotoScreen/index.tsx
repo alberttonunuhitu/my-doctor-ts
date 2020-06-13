@@ -1,6 +1,6 @@
-import React from 'react';
-import {Text, View, StyleSheet, Image} from 'react-native';
-import {ILNullPhoto, IconAddPhoto} from '../../assets';
+import React, {useState} from 'react';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {ILNullPhoto, IconAddPhoto, IconRemovePhoto} from '../../assets';
 import {
   HeaderComponent,
   ButtomComponent,
@@ -9,12 +9,40 @@ import {
 } from '../../components';
 import {colors, fonts} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
+import ImagePicker from 'react-native-image-picker';
+import {showMessage} from 'react-native-flash-message';
 
 interface UploadPhotoScreenProps {
   navigation: RootStackNavProps<'UploadPhoto'>;
 }
 
 const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
+  const [hasPhoto, setHasPhoto] = useState(false);
+  const [photo, setPhoto] = useState(ILNullPhoto);
+
+  const getImageFromLibrary = () => {
+    ImagePicker.launchImageLibrary({}, (response) => {
+      if (response.error) {
+        showMessage({
+          message: response.error,
+          type: 'danger',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
+      }
+
+      if (!response.didCancel) {
+        setHasPhoto(true);
+        setPhoto({uri: response.uri});
+      }
+    });
+  };
+
+  const removeImage = () => {
+    setHasPhoto(false);
+    setPhoto(ILNullPhoto);
+  };
+
   return (
     <View style={styles.screen}>
       <HeaderComponent
@@ -24,10 +52,20 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
       <View style={styles.content}>
         <View style={styles.sectionUploadPhoto}>
           <View style={styles.wrapperAvatar}>
-            <Image source={ILNullPhoto} style={styles.avatar} />
-            <View style={styles.wrapperIcon}>
-              <IconAddPhoto />
-            </View>
+            <Image source={photo} style={styles.avatar} />
+            {hasPhoto ? (
+              <TouchableOpacity
+                style={styles.wrapperIcon}
+                onPress={removeImage}>
+                <IconRemovePhoto />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.wrapperIcon}
+                onPress={getImageFromLibrary}>
+                <IconAddPhoto />
+              </TouchableOpacity>
+            )}
           </View>
           <Text style={styles.textName}>Shayna Melinda</Text>
           <Text style={styles.textProfession}>Product Designer</Text>
@@ -35,6 +73,7 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
         <View>
           <ButtomComponent
             label="Upload and Continue"
+            isDisabled={!hasPhoto}
             onPress={() => navigation.replace('MainApp')}
           />
           <SpaceComponent height={30} />
@@ -80,6 +119,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 110,
     height: 110,
+    borderRadius: 110 / 2,
   },
   wrapperIcon: {
     position: 'absolute',

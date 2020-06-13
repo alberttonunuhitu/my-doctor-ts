@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import IconOnly from './IconOnly';
 import ButtonSendChatComponent from './ButtonSendChat';
 import {colors, fonts} from '../../../utilities';
@@ -37,25 +37,26 @@ const ButtomComponent: React.FC<ButtomComponentProps> = ({
       ? colors.button.secondary.text
       : colors.button.primary.text;
 
+  if (!isDisabled) {
+    return (
+      <TouchableOpacity
+        style={[styles.container, {backgroundColor: containerColor}]}
+        onPress={onPress}>
+        <Text style={[styles.text, {color: textColor}]}>{label}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   return (
-    <TouchableOpacity
+    <View
       style={[
         styles.container,
-        {
-          backgroundColor: containerColor,
-        },
-      ]}
-      onPress={onPress}>
-      <Text
-        style={[
-          styles.text,
-          {
-            color: textColor,
-          },
-        ]}>
+        {backgroundColor: colors.button.disabled.background},
+      ]}>
+      <Text style={[styles.text, {color: colors.button.disabled.text}]}>
         {label}
       </Text>
-    </TouchableOpacity>
+    </View>
   );
 };
 

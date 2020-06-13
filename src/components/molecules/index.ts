@@ -9,6 +9,7 @@ import HospitalComponent from './Hospital';
 import ChatComponent from './Chat';
 import InputChatComponent from './InputChat';
 import ProfileComponent from './Profile';
+import LoadingComponent from './Loading';
 
 export {
   HeaderComponent,
@@ -22,4 +23,5 @@ export {
   ChatComponent,
   InputChatComponent,
   ProfileComponent,
+  LoadingComponent,
 };

@@ -5,10 +5,13 @@ import {
   HeaderComponent,
   InputComponent,
   SpaceComponent,
+  LoadingComponent,
 } from '../../components';
 import {colors} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import {showMessage} from 'react-native-flash-message';
 
 interface RegisterScreenProps {
   navigation: RootStackNavProps<'Register'>;
@@ -22,69 +25,90 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
     password: string;
   }
 
-  const [user, setUser] = useState<UserInterface>({
+  const initialUser: UserInterface = {
     fullName: '',
     profession: '',
     email: '',
     password: '',
-  });
+  };
+
+  const [user, setUser] = useState<UserInterface>(initialUser);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onCountinue = () => {
+    setIsLoading(true);
     auth()
       .createUserWithEmailAndPassword(user.email, user.password)
-      .then(() => {
+      .then((response) => {
+        setIsLoading(false);
+        setUser(initialUser);
+        const data = {
+          fullName: user.fullName,
+          profession: user.profession,
+          email: user.email,
+        };
+        database().ref(`users/${response.user.uid}/`).set(data);
         // return navigation.navigate('UploadPhoto');
       })
       .catch((error) => {
+        setIsLoading(false);
+        let errorMessage = error.message;
         if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
+          errorMessage = 'Alamat email sudah digunakan.';
         }
-
         if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
+          errorMessage = 'Alamat email tidak valid.';
         }
-
-        console.error(error);
+        showMessage({
+          message: errorMessage,
+          type: 'danger',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
       });
   };
 
   return (
-    <View style={styles.screen}>
-      <HeaderComponent
-        title="Daftar Akun"
-        onPress={() => navigation.goBack()}
-      />
-      <View style={styles.content}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <InputComponent
-            label="Full Name"
-            value={user.fullName}
-            onChangeText={(value) => setUser({...user, fullName: value})}
-          />
-          <SpaceComponent height={24} />
-          <InputComponent
-            label="Pekerjaan"
-            value={user.profession}
-            onChangeText={(value) => setUser({...user, profession: value})}
-          />
-          <SpaceComponent height={24} />
-          <InputComponent
-            label="Email"
-            value={user.email}
-            onChangeText={(value) => setUser({...user, email: value})}
-          />
-          <SpaceComponent height={24} />
-          <InputComponent
-            type="password"
-            label="Password"
-            value={user.password}
-            onChangeText={(value) => setUser({...user, password: value})}
-          />
-          <SpaceComponent height={40} />
-          <ButtomComponent label="Continue" onPress={onCountinue} />
-        </ScrollView>
+    <>
+      <View style={styles.screen}>
+        <HeaderComponent
+          title="Daftar Akun"
+          onPress={() => navigation.goBack()}
+        />
+        <View style={styles.content}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <InputComponent
+              label="Full Name"
+              value={user.fullName}
+              onChangeText={(value) => setUser({...user, fullName: value})}
+            />
+            <SpaceComponent height={24} />
+            <InputComponent
+              label="Pekerjaan"
+              value={user.profession}
+              onChangeText={(value) => setUser({...user, profession: value})}
+            />
+            <SpaceComponent height={24} />
+            <InputComponent
+              label="Email"
+              value={user.email}
+              onChangeText={(value) => setUser({...user, email: value})}
+            />
+            <SpaceComponent height={24} />
+            <InputComponent
+              type="password"
+              label="Password"
+              value={user.password}
+              onChangeText={(value) => setUser({...user, password: value})}
+            />
+            <SpaceComponent height={40} />
+            <ButtomComponent label="Continue" onPress={onCountinue} />
+          </ScrollView>
+        </View>
       </View>
-    </View>
+      {isLoading && <LoadingComponent />}
+    </>
   );
 };
 
