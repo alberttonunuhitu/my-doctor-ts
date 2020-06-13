@@ -7,7 +7,7 @@ import {
   SpaceComponent,
   LoadingComponent,
 } from '../../components';
-import {colors} from '../../utilities';
+import {colors, storeInLocalStorage} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -41,15 +41,21 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
     auth()
       .createUserWithEmailAndPassword(user.email, user.password)
       .then((response) => {
-        setIsLoading(false);
-        setUser(initialUser);
         const data = {
           fullName: user.fullName,
           profession: user.profession,
           email: user.email,
         };
         database().ref(`users/${response.user.uid}/`).set(data);
-        // return navigation.navigate('UploadPhoto');
+        storeInLocalStorage('user', {...data, uid: response.user.uid});
+        setIsLoading(false);
+        setUser(initialUser);
+        return navigation.navigate('UploadPhoto', {
+          uid: response.user.uid,
+          fullName: data.fullName,
+          profession: data.profession,
+          email: data.email,
+        });
       })
       .catch((error) => {
         setIsLoading(false);
@@ -60,6 +66,10 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
         if (error.code === 'auth/invalid-email') {
           errorMessage = 'Alamat email tidak valid.';
         }
+        if (error.code === 'auth/weak-password') {
+          errorMessage = 'Maaf, password kurang dari 8 karakter.';
+        }
+
         showMessage({
           message: errorMessage,
           type: 'danger',

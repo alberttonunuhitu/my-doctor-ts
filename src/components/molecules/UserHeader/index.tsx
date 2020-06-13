@@ -1,19 +1,45 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {DummyUser} from '../../../assets';
-import {colors, fonts} from '../../../utilities';
+import {ILNullPhoto} from '../../../assets';
+import {colors, fonts, getFromLocalStorage} from '../../../utilities';
 
 interface UserHeaderComponentProps {
   onPress: () => void;
 }
 
 const UserHeaderComponent: React.FC<UserHeaderComponentProps> = ({onPress}) => {
+  interface UserEntity {
+    uid: string;
+    fullName: string;
+    profession: string;
+    email: string;
+    photo: any;
+  }
+
+  const initialUser: UserEntity = {
+    uid: 'UID',
+    fullName: 'FULLNAME',
+    profession: 'PROFESSION',
+    email: 'EMAIL',
+    photo: ILNullPhoto,
+  };
+
+  const [user, setUser] = useState<UserEntity>(initialUser);
+
+  useEffect(() => {
+    getFromLocalStorage('user').then((response) => {
+      const data = response;
+      data.photo = {uri: response.photo};
+      setUser(data);
+    });
+  }, []);
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={DummyUser} style={styles.avatar} />
+      <Image source={user.photo} style={styles.avatar} />
       <View>
-        <Text style={styles.nameText}>Shayna Melinda</Text>
-        <Text style={styles.professionText}>Product Designer</Text>
+        <Text style={styles.nameText}>{user.fullName}</Text>
+        <Text style={styles.professionText}>{user.profession}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -35,10 +61,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary[600],
     fontSize: 16,
     color: colors.text.primary,
+    textTransform: 'capitalize',
   },
   professionText: {
     fontFamily: fonts.primary.normal,
     fontSize: 12,
     color: colors.text.secondary,
+    textTransform: 'capitalize',
   },
 });

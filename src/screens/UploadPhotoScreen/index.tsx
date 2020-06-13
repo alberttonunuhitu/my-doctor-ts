@@ -6,22 +6,39 @@ import {
   ButtomComponent,
   SpaceComponent,
   LinkComponent,
+  LoadingComponent,
 } from '../../components';
-import {colors, fonts} from '../../utilities';
-import {RootStackNavProps} from '../../routes/RootStackParamList';
-import ImagePicker from 'react-native-image-picker';
+import {colors, fonts, storeInLocalStorage} from '../../utilities';
+import {
+  RootStackNavProps,
+  RootStackRouteProps,
+} from '../../routes/RootStackParamList';
+import ImagePicker, {ImagePickerOptions} from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
+import database from '@react-native-firebase/database';
 
 interface UploadPhotoScreenProps {
   navigation: RootStackNavProps<'UploadPhoto'>;
+  route: RootStackRouteProps<'UploadPhoto'>;
 }
 
-const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
+const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photo, setPhoto] = useState(ILNullPhoto);
+  const [photoDB, setPhotoDB] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getImageFromLibrary = () => {
-    ImagePicker.launchImageLibrary({}, (response) => {
+    const imagePickerOptions: ImagePickerOptions = {
+      quality: 0.5,
+      maxHeight: 200,
+      maxWidth: 200,
+    };
+
+    ImagePicker.launchImageLibrary(imagePickerOptions, (response) => {
       if (response.error) {
         showMessage({
           message: response.error,
@@ -34,6 +51,7 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
       if (!response.didCancel) {
         setHasPhoto(true);
         setPhoto({uri: response.uri});
+        setPhotoDB(`data:${response.type};base64, ${response.data}`);
       }
     });
   };
@@ -41,51 +59,64 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
   const removeImage = () => {
     setHasPhoto(false);
     setPhoto(ILNullPhoto);
+    setPhotoDB('');
+  };
+
+  const onUploadAndContinue = async () => {
+    setIsLoading(true);
+    const data = {...route.params, photo: photoDB};
+    await database().ref(`users/${data.uid}`).update({photo: data.photo});
+    await storeInLocalStorage('user', data);
+    setIsLoading(false);
+    navigation.replace('MainApp');
   };
 
   return (
-    <View style={styles.screen}>
-      <HeaderComponent
-        title="Upload Photo"
-        onPress={() => navigation.goBack()}
-      />
-      <View style={styles.content}>
-        <View style={styles.sectionUploadPhoto}>
-          <View style={styles.wrapperAvatar}>
-            <Image source={photo} style={styles.avatar} />
-            {hasPhoto ? (
-              <TouchableOpacity
-                style={styles.wrapperIcon}
-                onPress={removeImage}>
-                <IconRemovePhoto />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.wrapperIcon}
-                onPress={getImageFromLibrary}>
-                <IconAddPhoto />
-              </TouchableOpacity>
-            )}
+    <>
+      <View style={styles.screen}>
+        <HeaderComponent
+          title="Upload Photo"
+          onPress={() => navigation.goBack()}
+        />
+        <View style={styles.content}>
+          <View style={styles.sectionUploadPhoto}>
+            <View style={styles.wrapperAvatar}>
+              <Image source={photo} style={styles.avatar} />
+              {hasPhoto ? (
+                <TouchableOpacity
+                  style={styles.wrapperIcon}
+                  onPress={removeImage}>
+                  <IconRemovePhoto />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.wrapperIcon}
+                  onPress={getImageFromLibrary}>
+                  <IconAddPhoto />
+                </TouchableOpacity>
+              )}
+            </View>
+            <Text style={styles.textName}>{route.params.fullName}</Text>
+            <Text style={styles.textProfession}>{route.params.profession}</Text>
           </View>
-          <Text style={styles.textName}>Shayna Melinda</Text>
-          <Text style={styles.textProfession}>Product Designer</Text>
-        </View>
-        <View>
-          <ButtomComponent
-            label="Upload and Continue"
-            isDisabled={!hasPhoto}
-            onPress={() => navigation.replace('MainApp')}
-          />
-          <SpaceComponent height={30} />
-          <LinkComponent
-            label="Skip for this"
-            size={16}
-            align="center"
-            onPress={() => navigation.replace('MainApp')}
-          />
+          <View>
+            <ButtomComponent
+              label="Upload and Continue"
+              isDisabled={!hasPhoto}
+              onPress={onUploadAndContinue}
+            />
+            <SpaceComponent height={30} />
+            <LinkComponent
+              label="Skip for this"
+              size={16}
+              align="center"
+              onPress={() => navigation.replace('MainApp')}
+            />
+          </View>
         </View>
       </View>
-    </View>
+      {isLoading && <LoadingComponent />}
+    </>
   );
 };
 

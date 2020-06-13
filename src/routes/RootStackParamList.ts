@@ -6,7 +6,12 @@ export type RootStackParamList = {
   GettingStarted: undefined;
   Register: undefined;
   Login: undefined;
-  UploadPhoto: undefined;
+  UploadPhoto: {
+    uid: string;
+    fullName: string;
+    profession: string;
+    email: string;
+  };
   MainApp: undefined;
   ChooseDoctor: undefined;
   Chatting: undefined;

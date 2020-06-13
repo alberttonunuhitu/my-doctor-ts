@@ -19,7 +19,7 @@ Project ini mengikuti dari course BWA React Native.
 
 [ ] Feature
 - [ ] Auth
-- [ ] Upload Photo
+- [x] Upload Photo
 - [ ] Update Profile
 - [ ] List Doctor Category
 - [ ] List Doctor
