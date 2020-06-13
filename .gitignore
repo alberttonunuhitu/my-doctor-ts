@@ -43,6 +43,7 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
+google-services.json
 !debug.keystore
 
 # fastlane
