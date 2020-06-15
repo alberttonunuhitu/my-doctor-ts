@@ -6,16 +6,16 @@ import {
   ButtomComponent,
   SpaceComponent,
   LinkComponent,
-  LoadingComponent,
 } from '../../components';
-import {colors, fonts, storeInLocalStorage} from '../../utilities';
+import {colors, fonts, storeInLocalStorage, showError} from '../../utilities';
 import {
   RootStackNavProps,
   RootStackRouteProps,
 } from '../../routes/RootStackParamList';
 import ImagePicker, {ImagePickerOptions} from 'react-native-image-picker';
-import {showMessage} from 'react-native-flash-message';
 import database from '@react-native-firebase/database';
+import {useDispatch} from 'react-redux';
+import {setLoading} from '../../store';
 
 interface UploadPhotoScreenProps {
   navigation: RootStackNavProps<'UploadPhoto'>;
@@ -29,7 +29,8 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photo, setPhoto] = useState(ILNullPhoto);
   const [photoDB, setPhotoDB] = useState('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   const getImageFromLibrary = () => {
     const imagePickerOptions: ImagePickerOptions = {
@@ -40,12 +41,7 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
 
     ImagePicker.launchImageLibrary(imagePickerOptions, (response) => {
       if (response.error) {
-        showMessage({
-          message: response.error,
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        showError(response.error);
       }
 
       if (!response.didCancel) {
@@ -63,60 +59,57 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
   };
 
   const onUploadAndContinue = async () => {
-    setIsLoading(true);
+    dispatch(setLoading(true));
     const data = {...route.params, photo: photoDB};
     await database().ref(`users/${data.uid}`).update({photo: data.photo});
     await storeInLocalStorage('user', data);
-    setIsLoading(false);
+    dispatch(setLoading(false));
     navigation.replace('MainApp');
   };
 
   return (
-    <>
-      <View style={styles.screen}>
-        <HeaderComponent
-          title="Upload Photo"
-          onPress={() => navigation.goBack()}
-        />
-        <View style={styles.content}>
-          <View style={styles.sectionUploadPhoto}>
-            <View style={styles.wrapperAvatar}>
-              <Image source={photo} style={styles.avatar} />
-              {hasPhoto ? (
-                <TouchableOpacity
-                  style={styles.wrapperIcon}
-                  onPress={removeImage}>
-                  <IconRemovePhoto />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.wrapperIcon}
-                  onPress={getImageFromLibrary}>
-                  <IconAddPhoto />
-                </TouchableOpacity>
-              )}
-            </View>
-            <Text style={styles.textName}>{route.params.fullName}</Text>
-            <Text style={styles.textProfession}>{route.params.profession}</Text>
+    <View style={styles.screen}>
+      <HeaderComponent
+        title="Upload Photo"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.content}>
+        <View style={styles.sectionUploadPhoto}>
+          <View style={styles.wrapperAvatar}>
+            <Image source={photo} style={styles.avatar} />
+            {hasPhoto ? (
+              <TouchableOpacity
+                style={styles.wrapperIcon}
+                onPress={removeImage}>
+                <IconRemovePhoto />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.wrapperIcon}
+                onPress={getImageFromLibrary}>
+                <IconAddPhoto />
+              </TouchableOpacity>
+            )}
           </View>
-          <View>
-            <ButtomComponent
-              label="Upload and Continue"
-              isDisabled={!hasPhoto}
-              onPress={onUploadAndContinue}
-            />
-            <SpaceComponent height={30} />
-            <LinkComponent
-              label="Skip for this"
-              size={16}
-              align="center"
-              onPress={() => navigation.replace('MainApp')}
-            />
-          </View>
+          <Text style={styles.textName}>{route.params.fullName}</Text>
+          <Text style={styles.textProfession}>{route.params.profession}</Text>
+        </View>
+        <View>
+          <ButtomComponent
+            label="Upload and Continue"
+            isDisabled={!hasPhoto}
+            onPress={onUploadAndContinue}
+          />
+          <SpaceComponent height={30} />
+          <LinkComponent
+            label="Skip for this"
+            size={16}
+            align="center"
+            onPress={() => navigation.replace('MainApp')}
+          />
         </View>
       </View>
-      {isLoading && <LoadingComponent />}
-    </>
+    </View>
   );
 };
 

@@ -3,6 +3,7 @@ import {Text, View, StyleSheet} from 'react-native';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import {ILLogo} from '../../assets';
 import {colors, fonts} from '../../utilities';
+import auth from '@react-native-firebase/auth';
 
 interface SplashScreenProps {
   navigation: RootStackNavProps<'Splash'>;
@@ -11,7 +12,13 @@ interface SplashScreenProps {
 const SplashScreen: React.FC<SplashScreenProps> = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace('GettingStarted');
+      auth().onAuthStateChanged((user) => {
+        if (user) {
+          return navigation.replace('MainApp');
+        }
+
+        return navigation.replace('GettingStarted');
+      });
     }, 3000);
   }, [navigation]);
 

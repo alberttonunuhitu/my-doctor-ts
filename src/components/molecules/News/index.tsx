@@ -1,20 +1,25 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {DummyNews1} from '../../../assets';
 import {colors, fonts} from '../../../utilities';
 
-interface NewsComponentProps {}
+interface NewsComponentProps {
+  title: string;
+  createdAt: string;
+  image: string;
+}
 
-const NewsComponent: React.FC<NewsComponentProps> = ({}) => {
+const NewsComponent: React.FC<NewsComponentProps> = ({
+  title,
+  createdAt,
+  image,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapperText}>
-        <Text style={styles.titleText}>
-          Is it safe to stay at home during coronavirus?
-        </Text>
-        <Text style={styles.dateText}>Today</Text>
+        <Text style={styles.titleText}>{title}</Text>
+        <Text style={styles.dateText}>{createdAt}</Text>
       </View>
-      <Image source={DummyNews1} style={styles.image} />
+      <Image source={{uri: image}} style={styles.image} />
     </View>
   );
 };

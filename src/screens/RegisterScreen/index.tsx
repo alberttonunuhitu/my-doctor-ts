@@ -5,13 +5,13 @@ import {
   HeaderComponent,
   InputComponent,
   SpaceComponent,
-  LoadingComponent,
 } from '../../components';
-import {colors, storeInLocalStorage} from '../../utilities';
+import {colors, storeInLocalStorage, showError} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import {showMessage} from 'react-native-flash-message';
+import {useDispatch} from 'react-redux';
+import {setLoading} from '../../store';
 
 interface RegisterScreenProps {
   navigation: RootStackNavProps<'Register'>;
@@ -33,11 +33,10 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
   };
 
   const [user, setUser] = useState<UserInterface>(initialUser);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const onCountinue = () => {
-    setIsLoading(true);
+    dispatch(setLoading(true));
     auth()
       .createUserWithEmailAndPassword(user.email, user.password)
       .then((response) => {
@@ -48,7 +47,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
         };
         database().ref(`users/${response.user.uid}/`).set(data);
         storeInLocalStorage('user', {...data, uid: response.user.uid});
-        setIsLoading(false);
+        dispatch(setLoading(false));
         setUser(initialUser);
         return navigation.navigate('UploadPhoto', {
           uid: response.user.uid,
@@ -58,67 +57,64 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
         });
       })
       .catch((error) => {
-        setIsLoading(false);
-        let errorMessage = error.message;
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'Alamat email sudah digunakan.';
-        }
-        if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Alamat email tidak valid.';
-        }
-        if (error.code === 'auth/weak-password') {
-          errorMessage = 'Maaf, password kurang dari 8 karakter.';
+        let errorMessage: string;
+
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'Alamat email sudah digunakan.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Alamat email tidak valid.';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Maaf, password kurang dari 8 karakter.';
+            break;
+          default:
+            errorMessage = error.message;
         }
 
-        showMessage({
-          message: errorMessage,
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        dispatch(setLoading(false));
+        showError(errorMessage);
       });
   };
 
   return (
-    <>
-      <View style={styles.screen}>
-        <HeaderComponent
-          title="Daftar Akun"
-          onPress={() => navigation.goBack()}
-        />
-        <View style={styles.content}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <InputComponent
-              label="Full Name"
-              value={user.fullName}
-              onChangeText={(value) => setUser({...user, fullName: value})}
-            />
-            <SpaceComponent height={24} />
-            <InputComponent
-              label="Pekerjaan"
-              value={user.profession}
-              onChangeText={(value) => setUser({...user, profession: value})}
-            />
-            <SpaceComponent height={24} />
-            <InputComponent
-              label="Email"
-              value={user.email}
-              onChangeText={(value) => setUser({...user, email: value})}
-            />
-            <SpaceComponent height={24} />
-            <InputComponent
-              type="password"
-              label="Password"
-              value={user.password}
-              onChangeText={(value) => setUser({...user, password: value})}
-            />
-            <SpaceComponent height={40} />
-            <ButtomComponent label="Continue" onPress={onCountinue} />
-          </ScrollView>
-        </View>
+    <View style={styles.screen}>
+      <HeaderComponent
+        title="Daftar Akun"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.content}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <InputComponent
+            label="Full Name"
+            value={user.fullName}
+            onChangeText={(value) => setUser({...user, fullName: value})}
+          />
+          <SpaceComponent height={24} />
+          <InputComponent
+            label="Pekerjaan"
+            value={user.profession}
+            onChangeText={(value) => setUser({...user, profession: value})}
+          />
+          <SpaceComponent height={24} />
+          <InputComponent
+            label="Email"
+            value={user.email}
+            onChangeText={(value) => setUser({...user, email: value})}
+          />
+          <SpaceComponent height={24} />
+          <InputComponent
+            type="password"
+            label="Password"
+            value={user.password}
+            onChangeText={(value) => setUser({...user, password: value})}
+          />
+          <SpaceComponent height={40} />
+          <ButtomComponent label="Continue" onPress={onCountinue} />
+        </ScrollView>
       </View>
-      {isLoading && <LoadingComponent />}
-    </>
+    </View>
   );
 };
 

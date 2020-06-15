@@ -7,7 +7,7 @@ import {
   DoctorRatingComponent,
   NewsComponent,
 } from '../../components';
-import {colors, fonts} from '../../utilities';
+import {colors, fonts, showError} from '../../utilities';
 import {
   JSONDoctorCategories,
   DummyDoctor1,
@@ -15,6 +15,7 @@ import {
   DummyDoctor3,
 } from '../../assets';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
+import database, {FirebaseDatabaseTypes} from '@react-native-firebase/database';
 
 interface DoctorScreenProps {
   navigation: RootStackNavProps<'MainApp'>;
@@ -25,7 +26,41 @@ interface DoctorCategory {
   category: string;
 }
 
+interface News {
+  id: string;
+  title: string;
+  body: string;
+  image: string;
+  createdAt: string;
+}
+
 const DoctorScreen: React.FC<DoctorScreenProps> = ({navigation}) => {
+  const [news, setNews] = React.useState<News[]>([]);
+
+  const NewsAPI = async () => {
+    try {
+      const snapshot = await database().ref('news/').once('value');
+      let array: News[] = [];
+
+      if (snapshot.val()) {
+        snapshot.forEach((element: FirebaseDatabaseTypes.DataSnapshot) => {
+          array.push(element.val());
+        });
+      }
+
+      return array;
+    } catch (error) {
+      showError(error.message);
+      return [];
+    }
+  };
+
+  React.useEffect(() => {
+    NewsAPI().then((response) => {
+      setNews(response);
+    });
+  }, []);
+
   return (
     <View style={styles.screen}>
       <View style={styles.content}>
@@ -72,9 +107,16 @@ const DoctorScreen: React.FC<DoctorScreenProps> = ({navigation}) => {
             />
             <Text style={styles.sectionTitle}>Good News</Text>
           </View>
-          <NewsComponent />
-          <NewsComponent />
-          <NewsComponent />
+          {news.map((element) => {
+            return (
+              <NewsComponent
+                key={element.id}
+                title={element.title}
+                createdAt={element.createdAt}
+                image={element.image}
+              />
+            );
+          })}
           <SpaceComponent height={30} />
         </ScrollView>
       </View>

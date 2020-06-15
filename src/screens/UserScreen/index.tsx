@@ -9,12 +9,19 @@ import {
 } from '../../components';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import {colors} from '../..//utilities';
+import auth from '@react-native-firebase/auth';
 
 interface UserScreenProps {
   navigation: RootStackNavProps<'User'>;
 }
 
 const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
+  const signOut = () => {
+    auth()
+      .signOut()
+      .then(() => navigation.navigate('GettingStarted'));
+  };
+
   return (
     <View style={styles.screen}>
       <HeaderComponent title="Profile" onPress={() => navigation.goBack()} />
@@ -49,9 +56,9 @@ const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
       <ListComponent
         type="next"
         icon="help"
-        name="Help Center"
+        name="Keluar"
         description="Read our guidelines"
-        onPress={() => null}
+        onPress={signOut}
       />
     </View>
   );
