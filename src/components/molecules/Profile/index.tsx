@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import {IconRemovePhoto, IconFemale, IconMale} from '../../../assets';
+import {IconFemale, IconMale, IconRemovePhoto} from '../../../assets';
 import {colors, fonts} from '../../../utilities';
 
 interface ProfileComponentProps {
@@ -44,7 +44,7 @@ const ProfileComponent: React.FC<ProfileComponentProps> = ({
           </View>
         )}
       </View>
-      {name && (
+      {name && name.length > 0 && (
         <View>
           <Text style={styles.textName}>{name}</Text>
           <Text style={styles.textProfession}>{description}</Text>

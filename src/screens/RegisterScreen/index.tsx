@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {
   ButtomComponent,
@@ -6,55 +6,59 @@ import {
   InputComponent,
   SpaceComponent,
 } from '../../components';
-import {colors, storeInLocalStorage, showError} from '../../utilities';
+import {colors, showError, storeData} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {useDispatch} from 'react-redux';
-import {setLoading} from '../../store';
+import {setLoading, setUser, UserState} from '../../store';
 
 interface RegisterScreenProps {
   navigation: RootStackNavProps<'Register'>;
 }
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
-  interface UserInterface {
+  interface UserForm {
     fullName: string;
     profession: string;
     email: string;
-    password: string;
   }
 
-  const initialUser: UserInterface = {
+  const initialForm: UserForm = {
     fullName: '',
     profession: '',
     email: '',
-    password: '',
   };
 
-  const [user, setUser] = useState<UserInterface>(initialUser);
+  const [form, setForm] = React.useState<UserForm>(initialForm);
+  const [password, setPassword] = React.useState<string>('');
   const dispatch = useDispatch();
+
+  const postUser = async (uid: string, data: UserForm): Promise<UserState> => {
+    try {
+      await database().ref(`users/${uid}`).set(data);
+      await storeData('user', {...data, uid});
+      return {...data, uid};
+    } catch (error) {
+      return error;
+    }
+  };
 
   const onCountinue = () => {
     dispatch(setLoading(true));
     auth()
-      .createUserWithEmailAndPassword(user.email, user.password)
+      .createUserWithEmailAndPassword(form.email, password)
       .then((response) => {
-        const data = {
-          fullName: user.fullName,
-          profession: user.profession,
-          email: user.email,
-        };
-        database().ref(`users/${response.user.uid}/`).set(data);
-        storeInLocalStorage('user', {...data, uid: response.user.uid});
-        dispatch(setLoading(false));
-        setUser(initialUser);
-        return navigation.navigate('UploadPhoto', {
-          uid: response.user.uid,
-          fullName: data.fullName,
-          profession: data.profession,
-          email: data.email,
-        });
+        const data = {...form};
+        postUser(response.user.uid, data)
+          .then((user) => {
+            dispatch(setUser(user));
+            dispatch(setLoading(false));
+            navigation.navigate('UploadPhoto');
+          })
+          .catch((error) => {
+            showError(error.message);
+          });
       })
       .catch((error) => {
         let errorMessage: string;
@@ -88,27 +92,27 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({navigation}) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <InputComponent
             label="Full Name"
-            value={user.fullName}
-            onChangeText={(value) => setUser({...user, fullName: value})}
+            value={form.fullName}
+            onChangeText={(value) => setForm({...form, fullName: value})}
           />
           <SpaceComponent height={24} />
           <InputComponent
             label="Pekerjaan"
-            value={user.profession}
-            onChangeText={(value) => setUser({...user, profession: value})}
+            value={form.profession}
+            onChangeText={(value) => setForm({...form, profession: value})}
           />
           <SpaceComponent height={24} />
           <InputComponent
             label="Email"
-            value={user.email}
-            onChangeText={(value) => setUser({...user, email: value})}
+            value={form.email}
+            onChangeText={(value) => setForm({...form, email: value})}
           />
           <SpaceComponent height={24} />
           <InputComponent
             type="password"
             label="Password"
-            value={user.password}
-            onChangeText={(value) => setUser({...user, password: value})}
+            value={password}
+            onChangeText={(value) => setPassword(value)}
           />
           <SpaceComponent height={40} />
           <ButtomComponent label="Continue" onPress={onCountinue} />

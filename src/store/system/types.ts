@@ -1,7 +1,7 @@
 export const SET_LOADING = 'SET_LOADING';
 
 export interface SystemState {
-  loading: boolean;
+  loading?: boolean;
 }
 
 interface SetLoadingAction {

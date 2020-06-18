@@ -4,14 +4,12 @@ import FlashMessage from 'react-native-flash-message';
 import {Provider, useSelector} from 'react-redux';
 import Routes from './routes';
 import {LoadingComponent} from './components';
-import store, {AppState} from './store';
+import store, {RootState} from './store';
 
 interface AppProps {}
 
 const Container = () => {
-  const systemState = useSelector<AppState, AppState['system']>(
-    (state) => state.system,
-  );
+  const isLoading = useSelector((state: RootState) => state.system.loading);
 
   return (
     <>
@@ -19,7 +17,7 @@ const Container = () => {
         <Routes />
       </NavigationContainer>
       <FlashMessage position="top" />
-      {systemState.loading && <LoadingComponent />}
+      {isLoading && <LoadingComponent />}
     </>
   );
 };

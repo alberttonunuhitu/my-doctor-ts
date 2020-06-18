@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {DummyUser} from '../../assets';
+import {ILNullPhoto} from '../../assets';
 import {
   HeaderComponent,
   ProfileComponent,
@@ -8,18 +8,30 @@ import {
   SpaceComponent,
 } from '../../components';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
-import {colors} from '../..//utilities';
+import {colors, removeData} from '../../utilities';
 import auth from '@react-native-firebase/auth';
+import {useSelector, useDispatch} from 'react-redux';
+import {RootState, setLoading, clearUser} from '../../store';
 
 interface UserScreenProps {
   navigation: RootStackNavProps<'User'>;
 }
 
 const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+
   const signOut = () => {
+    dispatch(setLoading(true));
     auth()
       .signOut()
-      .then(() => navigation.navigate('GettingStarted'));
+      .then(() => {
+        removeData('user').then(() => {
+          dispatch(clearUser());
+          dispatch(setLoading(false));
+          navigation.replace('GettingStarted');
+        });
+      });
   };
 
   return (
@@ -27,9 +39,9 @@ const UserScreen: React.FC<UserScreenProps> = ({navigation}) => {
       <HeaderComponent title="Profile" onPress={() => navigation.goBack()} />
       <SpaceComponent height={10} />
       <ProfileComponent
-        avatar={DummyUser}
-        name="Shayna Melinda"
-        description="Product Designer"
+        avatar={user.photo ? user.photo : ILNullPhoto}
+        name={user.fullName}
+        description={user.profession}
       />
       <SpaceComponent height={14} />
       <ListComponent

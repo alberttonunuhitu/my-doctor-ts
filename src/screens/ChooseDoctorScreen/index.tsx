@@ -7,21 +7,26 @@ import {
   DummyDoctor7,
   DummyDoctor8,
 } from '../../assets';
+import {
+  RootStackNavProps,
+  RootStackRouteProps,
+} from '../../routes/RootStackParamList';
 import {HeaderComponent, ListComponent} from '../../components';
-import {colors} from '../../utilities';
-import {RootStackNavProps} from '../../routes/RootStackParamList';
+import {colors, toTitleCase} from '../../utilities';
 
 interface ChooseDoctorScreenProps {
   navigation: RootStackNavProps<'ChooseDoctor'>;
+  route: RootStackRouteProps<'ChooseDoctor'>;
 }
 
 const ChooseDoctorScreen: React.FC<ChooseDoctorScreenProps> = ({
   navigation,
+  route,
 }) => {
   return (
     <View style={styles.screen}>
       <HeaderComponent
-        title="Pilih Dokter Anak"
+        title={`Pilih ${toTitleCase(route.params.name)}`}
         type="dark"
         onPress={() => navigation.goBack()}
       />

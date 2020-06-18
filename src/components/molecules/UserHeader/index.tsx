@@ -1,42 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ILNullPhoto} from '../../../assets';
-import {colors, fonts, getFromLocalStorage} from '../../../utilities';
+import {colors, fonts} from '../../../utilities';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../store';
 
 interface UserHeaderComponentProps {
   onPress: () => void;
 }
 
 const UserHeaderComponent: React.FC<UserHeaderComponentProps> = ({onPress}) => {
-  interface UserEntity {
-    uid: string;
-    fullName: string;
-    profession: string;
-    email: string;
-    photo: any;
-  }
-
-  const initialUser: UserEntity = {
-    uid: 'UID',
-    fullName: 'FULLNAME',
-    profession: 'PROFESSION',
-    email: 'EMAIL',
-    photo: ILNullPhoto,
-  };
-
-  const [user, setUser] = useState<UserEntity>(initialUser);
-
-  useEffect(() => {
-    getFromLocalStorage('user').then((response) => {
-      const data = response;
-      data.photo = {uri: response.photo};
-      setUser(data);
-    });
-  }, []);
+  const user = useSelector((state: RootState) => state.user);
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={user.photo} style={styles.avatar} />
+      <Image
+        source={user.photo ? {uri: user.photo} : ILNullPhoto}
+        style={styles.avatar}
+      />
       <View>
         <Text style={styles.nameText}>{user.fullName}</Text>
         <Text style={styles.professionText}>{user.profession}</Text>

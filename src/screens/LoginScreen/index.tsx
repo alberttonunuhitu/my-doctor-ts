@@ -7,12 +7,12 @@ import {
   LinkComponent,
   SpaceComponent,
 } from '../../components';
-import {colors, fonts, storeInLocalStorage, showError} from '../../utilities';
+import {colors, fonts, showError, storeData} from '../../utilities';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {useDispatch} from 'react-redux';
-import {setLoading} from '../../store';
+import {setLoading, setUser} from '../../store';
 
 interface LoginScreenProps {
   navigation: RootStackNavProps<'Login'>;
@@ -25,8 +25,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   }
 
   const intialCredentials: Credentials = {
-    email: 'albusainsworth@gmail.com',
-    password: '5e6f7g8h',
+    email: 'alberto.nunuhitu@gmail.com',
+    password: '12345678',
   };
 
   const [credentials, setCredentials] = useState<Credentials>(
@@ -34,25 +34,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({navigation}) => {
   );
   const dispatch = useDispatch();
 
+  const fetchUser = React.useCallback(
+    async (uid: string) => {
+      try {
+        const snapshot = await database().ref(`users/${uid}`).once('value');
+        const data = {...snapshot.val(), uid};
+        await storeData('user', data);
+        dispatch(setUser(data));
+      } catch (error) {
+        return error;
+      }
+    },
+    [dispatch],
+  );
+
   const login = () => {
     dispatch(setLoading(true));
 
     auth()
       .signInWithEmailAndPassword(credentials.email, credentials.password)
       .then((response) => {
-        database()
-          .ref(`users/${response.user.uid}/`)
-          .once('value')
-          .then((snapshot) => {
-            if (snapshot.val()) {
-              storeInLocalStorage('user', {
-                uid: response.user.uid,
-                ...snapshot.val(),
-              });
-              dispatch(setLoading(false));
-              navigation.replace('MainApp');
-            }
-          });
+        fetchUser(response.user.uid).then(() => {
+          dispatch(setLoading(false));
+          navigation.replace('MainApp');
+        });
       })
       .catch((error) => {
         let errorMessage: string;

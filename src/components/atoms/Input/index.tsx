@@ -6,6 +6,7 @@ interface InputComponentProps {
   type?: string;
   label: string;
   value?: any | undefined;
+  disabled?: boolean;
   onChangeText?: (text: string) => void;
 }
 
@@ -13,6 +14,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
   type = 'text',
   label,
   value,
+  disabled = false,
   onChangeText,
 }) => {
   const [borderColor, setBorderColor] = useState(colors.border);
@@ -32,6 +34,8 @@ const InputComponent: React.FC<InputComponentProps> = ({
         onChangeText={onChangeText}
         style={[styles.input, {borderColor: borderColor}]}
         secureTextEntry={secureTextEntry}
+        editable={!disabled}
+        selectTextOnFocus={!disabled}
       />
     </View>
   );

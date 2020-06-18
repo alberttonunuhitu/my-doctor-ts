@@ -18,6 +18,7 @@ import IconStarBlue from './ic-star-blue.svg';
 import IconFile from './ic-file.svg';
 import IconFemale from './ic-female.svg';
 import IconMale from './ic-male.svg';
+import IconCamera from './ic-camera.svg';
 
 export {
   IconBackDark,
@@ -40,4 +41,5 @@ export {
   IconFile,
   IconFemale,
   IconMale,
+  IconCamera,
 };

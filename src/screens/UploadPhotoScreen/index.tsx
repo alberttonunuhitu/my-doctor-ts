@@ -7,29 +7,22 @@ import {
   SpaceComponent,
   LinkComponent,
 } from '../../components';
-import {colors, fonts, storeInLocalStorage, showError} from '../../utilities';
-import {
-  RootStackNavProps,
-  RootStackRouteProps,
-} from '../../routes/RootStackParamList';
+import {colors, fonts, showError, storeData} from '../../utilities';
+import {RootStackNavProps} from '../../routes/RootStackParamList';
 import ImagePicker, {ImagePickerOptions} from 'react-native-image-picker';
 import database from '@react-native-firebase/database';
-import {useDispatch} from 'react-redux';
-import {setLoading} from '../../store';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLoading, setUser, RootState} from '../../store';
 
 interface UploadPhotoScreenProps {
   navigation: RootStackNavProps<'UploadPhoto'>;
-  route: RootStackRouteProps<'UploadPhoto'>;
 }
 
-const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
-  navigation,
-  route,
-}) => {
+const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({navigation}) => {
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photo, setPhoto] = useState(ILNullPhoto);
   const [photoDB, setPhotoDB] = useState('');
-
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   const getImageFromLibrary = () => {
@@ -60,9 +53,10 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
 
   const onUploadAndContinue = async () => {
     dispatch(setLoading(true));
-    const data = {...route.params, photo: photoDB};
-    await database().ref(`users/${data.uid}`).update({photo: data.photo});
-    await storeInLocalStorage('user', data);
+    const data = {...user, photo: photoDB};
+    await database().ref(`users/${user.uid}`).update({photo: data.photo});
+    await storeData('user', data);
+    dispatch(setUser(data));
     dispatch(setLoading(false));
     navigation.replace('MainApp');
   };
@@ -91,8 +85,8 @@ const UploadPhotoScreen: React.FC<UploadPhotoScreenProps> = ({
               </TouchableOpacity>
             )}
           </View>
-          <Text style={styles.textName}>{route.params.fullName}</Text>
-          <Text style={styles.textProfession}>{route.params.profession}</Text>
+          <Text style={styles.textName}>{user.fullName}</Text>
+          <Text style={styles.textProfession}>{user.profession}</Text>
         </View>
         <View>
           <ButtomComponent

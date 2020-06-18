@@ -1,4 +1,4 @@
-import {SystemState, SET_LOADING, SystemActionTypes} from './types';
+import {SET_LOADING, SystemState, SystemActionTypes} from './types';
 
 const initialState: SystemState = {
   loading: false,

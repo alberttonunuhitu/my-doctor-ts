@@ -7,23 +7,13 @@ import {
   DoctorRatingComponent,
   NewsComponent,
 } from '../../components';
-import {colors, fonts, showError} from '../../utilities';
-import {
-  JSONDoctorCategories,
-  DummyDoctor1,
-  DummyDoctor2,
-  DummyDoctor3,
-} from '../../assets';
+import {colors, fonts} from '../../utilities';
+import {DummyDoctor1, DummyDoctor2, DummyDoctor3} from '../../assets';
 import {RootStackNavProps} from '../../routes/RootStackParamList';
 import database, {FirebaseDatabaseTypes} from '@react-native-firebase/database';
 
 interface DoctorScreenProps {
   navigation: RootStackNavProps<'MainApp'>;
-}
-
-interface DoctorCategory {
-  id: number;
-  category: string;
 }
 
 interface News {
@@ -34,31 +24,49 @@ interface News {
   createdAt: string;
 }
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 const DoctorScreen: React.FC<DoctorScreenProps> = ({navigation}) => {
   const [news, setNews] = React.useState<News[]>([]);
+  const [categories, setCategories] = React.useState<Category[]>([]);
 
-  const NewsAPI = async () => {
-    try {
-      const snapshot = await database().ref('news/').once('value');
-      let array: News[] = [];
+  const fetchNews = async () => {
+    const list: News[] = [];
+    const snapshot = await database().ref('news/').once('value');
 
-      if (snapshot.val()) {
-        snapshot.forEach((element: FirebaseDatabaseTypes.DataSnapshot) => {
-          array.push(element.val());
-        });
-      }
-
-      return array;
-    } catch (error) {
-      showError(error.message);
-      return [];
+    if (snapshot.val()) {
+      snapshot.forEach((element: FirebaseDatabaseTypes.DataSnapshot) => {
+        list.push(element.val());
+      });
     }
+
+    setNews(list);
+  };
+
+  const fetchCategories = async () => {
+    const list: Category[] = [];
+    const snapshot = await database().ref('categories/').once('value');
+
+    if (snapshot.val()) {
+      snapshot.forEach((element: FirebaseDatabaseTypes.DataSnapshot) => {
+        list.push(element.val());
+      });
+    }
+
+    setCategories(list);
   };
 
   React.useEffect(() => {
-    NewsAPI().then((response) => {
-      setNews(response);
-    });
+    fetchNews();
+    fetchCategories();
+
+    return () => {
+      setNews([]);
+      setCategories([]);
+    };
   }, []);
 
   return (
@@ -75,11 +83,11 @@ const DoctorScreen: React.FC<DoctorScreenProps> = ({navigation}) => {
           <View style={styles.wrapperScroll}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <SpaceComponent width={32} />
-              {JSONDoctorCategories.data.map((element: DoctorCategory) => (
+              {categories.map((element: Category) => (
                 <DoctorCategoryComponent
                   key={element.id}
-                  label={element.category}
-                  onPress={() => navigation.navigate('ChooseDoctor')}
+                  label={element.name}
+                  onPress={() => navigation.navigate('ChooseDoctor', element)}
                 />
               ))}
               <SpaceComponent width={22} />
